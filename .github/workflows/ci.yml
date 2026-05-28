@@ -1,0 +1,110 @@
+name: CI — Build, Test & Scan
+
+# Triggers on push to main or any PR. 
+# In AWS this is replaced by CodePipeline, but this GitHub Action
+# runs the same steps locally for fast feedback on PRs.
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  products-service:
+    name: Products Service (Node.js)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: products-service
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: products-service/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build Docker image
+        run: docker build -t products-service:${{ github.sha }} .
+
+      - name: Scan image for vulnerabilities (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: products-service:${{ github.sha }}
+          format: table
+          exit-code: '1'
+          severity: 'HIGH,CRITICAL'
+          ignore-unfixed: true
+
+  orders-service:
+    name: Orders Service (Python)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: orders-service
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: orders-service/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        run: pytest tests/ -v
+
+      - name: Build Docker image
+        run: docker build -t orders-service:${{ github.sha }} .
+
+      - name: Scan image for vulnerabilities (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: orders-service:${{ github.sha }}
+          format: table
+          exit-code: '1'
+          severity: 'HIGH,CRITICAL'
+          ignore-unfixed: true
+
+  frontend:
+    name: Frontend (React/Vite)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          VITE_API_BASE_URL: ''
+
+      - name: Build Docker image
+        run: docker build -t frontend:${{ github.sha }} .

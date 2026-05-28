@@ -1,0 +1,88 @@
+version: '3.9'
+
+# Local development stack — mirrors the AWS architecture (ALB → ECS → RDS)
+# Run: docker compose up --build
+
+services:
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: ecommerce-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: localdev
+      POSTGRES_DB: ecommerce
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  products-service:
+    build: ./products-service
+    container_name: products-service
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ecommerce
+      DB_USER: postgres
+      DB_PASSWORD: localdev
+      DB_SSL: "false"
+      ENABLE_XRAY: "false"
+      ALLOWED_ORIGIN: "http://localhost:5173"
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  orders-service:
+    build: ./orders-service
+    container_name: orders-service
+    environment:
+      ENV: development
+      PORT: 8000
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ecommerce
+      DB_USER: postgres
+      DB_PASSWORD: localdev
+      DB_SSL: "false"
+      ENABLE_XRAY: "false"
+      PRODUCTS_SERVICE_URL: "http://products-service:3000"
+      ALLOWED_ORIGINS: "http://localhost:5173"
+    ports:
+      - "8000:8000"
+    depends_on:
+      products-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - products-service
+      - orders-service
+
+volumes:
+  pgdata:
