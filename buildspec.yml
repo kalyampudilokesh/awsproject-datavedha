@@ -1,0 +1,46 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+      python: 3.12
+
+    commands:
+      - echo Installing Trivy...
+      - curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
+      - mv ./bin/trivy /usr/local/bin/
+
+  pre_build:
+    commands:
+      - echo Running Product Service Tests...
+      - cd products-service
+      - npm ci
+      - npm test
+      - cd ..
+
+      - echo Running Order Service Tests...
+      - cd orders-service
+      - pip install -r requirements.txt
+      - pytest tests/ -v
+      - cd ..
+
+  build:
+    commands:
+      - echo Building Docker Images...
+
+      - docker build -t products-service:latest ./products-service
+      - docker build -t orders-service:latest ./orders-service
+
+      - echo Running Trivy Scan...
+
+      - trivy image --exit-code 1 --severity HIGH,CRITICAL products-service:latest
+      - trivy image --exit-code 1 --severity HIGH,CRITICAL orders-service:latest
+
+  post_build:
+    commands:
+      - echo Build completed successfully.
+
+artifacts:
+  files:
+    - '**/*'
