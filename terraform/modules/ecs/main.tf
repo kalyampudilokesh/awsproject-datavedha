@@ -22,7 +22,7 @@ resource "aws_ecs_task_definition" "products" {
     {
       name  = "products"
 
-      image = "nginx:latest"
+      image = "206818123390.dkr.ecr.ap-southeast-2.amazonaws.com/ecomm-products-service:latest"
 
       essential = true
 
@@ -32,6 +32,48 @@ resource "aws_ecs_task_definition" "products" {
           hostPort      = 3000
         }
       ]
+        environment = [
+      {
+        name  = "ENV"
+        value = "production"
+      },
+      {
+        name  = "PORT"
+        value = "3000"
+      },
+      {
+        name  = "LOG_LEVEL"
+        value = "info"
+      },
+      {
+        name  = "DB_HOST"
+        value = var.db_host
+      },
+      {
+        name  = "DB_PORT"
+        value = "5432"
+      },
+      {
+        name  = "DB_USER"
+        value = var.db_username
+      },
+      {
+        name  = "DB_PASSWORD"
+        value = var.db_password
+      },
+      {
+        name  = "DB_SSL"
+        value = "false"
+      },
+      {
+        name  = "ENABLE_XRAY"
+        value = "true"
+      },
+      {
+        name  = "ALLOWED_ORIGINS"
+        value = var.allowed_origins
+      }
+    ]
     }
   ])
 }
@@ -55,7 +97,7 @@ resource "aws_ecs_task_definition" "orders" {
     {
       name  = "orders"
 
-      image = "nginx:latest"
+      image = "206818123390.dkr.ecr.ap-southeast-2.amazonaws.com/ecomm-orders-service:latest"
 
       essential = true
 
@@ -65,6 +107,52 @@ resource "aws_ecs_task_definition" "orders" {
           hostPort      = 8000
         }
       ]
+      environment = [
+      {
+        name  = "ENV"
+        value = "production"
+      },
+      {
+        name  = "PORT"
+        value = "8000"
+      },
+      {
+        name  = "LOG_LEVEL"
+        value = "info"
+      },
+      {
+        name  = "DB_HOST"
+        value = var.db_host
+      },
+      {
+        name  = "DB_PORT"
+        value = "5432"
+      },
+      {
+        name  = "DB_USER"
+        value = var.db_username
+      },
+      {
+        name  = "DB_PASSWORD"
+        value = var.db_password
+      },
+      {
+        name  = "DB_SSL"
+        value = "false"
+      },
+      {
+        name  = "PRODUCTS_SERVICE_URL"
+        value = var.products_service_url
+      },
+      {
+        name  = "ENABLE_XRAY"
+        value = "true"
+      },
+      {
+        name  = "ALLOWED_ORIGINS"
+        value = var.allowed_origins
+      }
+    ]
     }
   ])
 }

@@ -73,7 +73,18 @@ module "ecs" {
   orders_target_group_arn = module.alb.orders_target_group_arn
 
   db_endpoint = module.rds.db_endpoint
+  
+  db_host = module.rds.db_endpoint
+  
+  db_username = "postgres"
+
+  db_password = var.db_password
+
+  products_service_url = "http://localhost:3000"
+
+  allowed_origins = "http://localhost:5173"
 }
+
 module "s3_frontend" {
 
   source = "./modules/s3"

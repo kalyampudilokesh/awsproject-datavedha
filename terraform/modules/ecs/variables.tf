@@ -15,3 +15,19 @@ variable "products_target_group_arn" {}
 variable "orders_target_group_arn" {}
 
 variable "db_endpoint" {}
+
+variable "db_host" {}
+
+variable "db_username" {}
+
+variable "db_password" {
+  sensitive = true
+}
+
+variable "products_service_url" {
+  default = "http://localhost:3000"
+}
+
+variable "allowed_origins" {
+  default = "http://localhost:5173"
+}
