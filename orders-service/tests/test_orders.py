@@ -2,6 +2,13 @@
 Orders service unit tests.
 Uses pytest-asyncio and mocks the DB pool + products service HTTP calls.
 """
+import os
+import sys
+
+sys.path.insert(
+    0,
+    os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+)
 
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch

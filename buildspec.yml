@@ -7,40 +7,55 @@ phases:
       python: 3.12
 
     commands:
-      - echo Installing Trivy...
+      - echo "Installing Trivy..."
       - curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
       - mv ./bin/trivy /usr/local/bin/
 
   pre_build:
     commands:
-      - echo Running Product Service Tests...
+      - echo "====================================="
+      - echo "Running Products Service Tests"
+      - echo "====================================="
+
       - cd products-service
       - npm ci
       - npm test
       - cd ..
 
-      - echo Running Order Service Tests...
+      - echo "====================================="
+      - echo "Running Orders Service Tests"
+      - echo "====================================="
+
       - cd orders-service
+      - export PYTHONPATH=$PWD
+      - python -m pip install --upgrade pip
       - pip install -r requirements.txt
-      - pytest tests/ -v
+      - python -m pytest tests/ -v
       - cd ..
 
   build:
     commands:
-      - echo Building Docker Images...
+      - echo "====================================="
+      - echo "Building Docker Images"
+      - echo "====================================="
 
       - docker build -t products-service:latest ./products-service
       - docker build -t orders-service:latest ./orders-service
 
-      - echo Running Trivy Scan...
+      - echo "====================================="
+      - echo "Running Trivy Security Scan"
+      - echo "====================================="
 
       - trivy image --exit-code 1 --severity HIGH,CRITICAL products-service:latest
       - trivy image --exit-code 1 --severity HIGH,CRITICAL orders-service:latest
 
   post_build:
     commands:
-      - echo Build completed successfully.
+      - echo "====================================="
+      - echo "Build Completed Successfully"
+      - echo "====================================="
 
 artifacts:
   files:
     - '**/*'
+    
