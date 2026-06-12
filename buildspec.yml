@@ -65,7 +65,7 @@ phases:
     commands:
       - echo Build completed successfully
 
-artifacts: 
-  files: 
-  - appspec.yml 
-  - taskdef.json
+artifacts:
+  files:
+    - appspec.yml
+    - taskdef.json
