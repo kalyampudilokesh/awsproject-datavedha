@@ -169,6 +169,15 @@ resource "aws_ecs_service" "products" {
 
   launch_type = "FARGATE"
 
+  deployment_controller {
+    type = "CODE_DEPLOY"
+  }
+  lifecycle {
+  ignore_changes = [
+    task_definition
+  ]
+  }
+
   network_configuration {
 
     subnets = var.private_subnet_ids
@@ -201,6 +210,16 @@ resource "aws_ecs_service" "orders" {
   desired_count = 1
 
   launch_type = "FARGATE"
+
+  deployment_controller {
+    type = "CODE_DEPLOY"
+  }
+
+  lifecycle {
+  ignore_changes = [
+    task_definition
+  ]
+  }
 
   network_configuration {
 
