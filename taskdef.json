@@ -1,9 +1,9 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:ap-southeast-2:206818123390:task-definition/products-service:5",
+
     "containerDefinitions": [
         {
             "name": "products",
-            "image": "206818123390.dkr.ecr.ap-southeast-2.amazonaws.com/ecomm-products-service:latest",
+            "image": "IMAGE1_NAME",
             "cpu": 0,
             "portMappings": [
                 {
@@ -50,10 +50,6 @@
                 {
                     "name": "LOG_LEVEL",
                     "value": "info"
-                },
-                {
-                    "name": "DB_PASSWORD",
-                    "value": "Raki8185"
                 }
             ],
             "mountPoints": [],
@@ -65,38 +61,15 @@
     "taskRoleArn": "arn:aws:iam::206818123390:role/ecomm-ecs-task-role",
     "executionRoleArn": "arn:aws:iam::206818123390:role/ecomm-ecs-execution-role",
     "networkMode": "awsvpc",
-    "revision": 5,
+
     "volumes": [],
-    "status": "ACTIVE",
-    "requiresAttributes": [
-        {
-            "name": "com.amazonaws.ecs.capability.ecr-auth"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.task-iam-role"
-        },
-        {
-            "name": "ecs.capability.execution-role-ecr-pull"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
-        },
-        {
-            "name": "ecs.capability.task-eni"
-        }
-    ],
+
+
     "placementConstraints": [],
-    "compatibilities": [
-        "EC2",
-        "MANAGED_INSTANCES",
-        "FARGATE"
-    ],
+
     "requiresCompatibilities": [
         "FARGATE"
     ],
     "cpu": "256",
-    "memory": "512",
-    "registeredAt": "2026-06-09T10:49:48.320Z",
-    "registeredBy": "arn:aws:iam::206818123390:root",
-    "tags": []
+    "memory": "512"
 }
