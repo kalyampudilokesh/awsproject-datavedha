@@ -1,5 +1,12 @@
 version: 0.2
 
+env:
+  variables:
+    AWS_DEFAULT_REGION: ap-southeast-2
+    ACCOUNT_ID: 206818123390
+    PRODUCTS_REPO: ecomm-products-service
+    ORDERS_REPO: ecomm-orders-service
+
 phases:
   install:
     runtime-versions:
@@ -7,56 +14,58 @@ phases:
       python: 3.12
 
     commands:
-      - echo "Installing Trivy..."
+      - echo Installing Trivy...
       - curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
       - mv ./bin/trivy /usr/local/bin/
 
   pre_build:
     commands:
-      - echo "====================================="
-      - echo "Running Products Service Tests"
-      - echo "====================================="
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
 
+      - echo Running Products Service Tests...
       - cd products-service
       - npm ci
       - npm test
       - cd ..
 
-      - echo "====================================="
-      - echo "Running Orders Service Tests"
-      - echo "====================================="
-
+      - echo Running Orders Service Tests...
       - cd orders-service
-      - export PYTHONPATH=$PWD
       - python -m pip install --upgrade pip
       - pip install -r requirements.txt
-      - python -m pytest tests/ -v
+      - export PYTHONPATH=$PWD
+      - pytest tests/ -v
       - cd ..
 
   build:
     commands:
-      - echo "====================================="
-      - echo "Building Docker Images"
-      - echo "====================================="
+      - echo Building Docker Images...
 
-      - docker build -t products-service:latest ./products-service
-      - docker build -t orders-service:latest ./orders-service
+      - docker build -t $PRODUCTS_REPO:latest ./products-service
+      - docker build -t $ORDERS_REPO:latest ./orders-service
 
-      - echo "====================================="
-      - echo "Running Trivy Security Scan"
-      - echo "====================================="
+      - echo Running Trivy Scan...
 
-      - trivy image --exit-code 0 --severity HIGH,CRITICAL products-service:latest
-      - trivy image --exit-code 0 --severity HIGH,CRITICAL orders-service:latest
+      - trivy image --exit-code 0 --severity HIGH,CRITICAL $PRODUCTS_REPO:latest
+      - trivy image --exit-code 0 --severity HIGH,CRITICAL $ORDERS_REPO:latest
+
+      - echo Tagging Images...
+
+      - docker tag $PRODUCTS_REPO:latest $ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$PRODUCTS_REPO:latest
+
+      - docker tag $ORDERS_REPO:latest $ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ORDERS_REPO:latest
+
+      - echo Pushing Images to ECR...
+
+      - docker push $ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$PRODUCTS_REPO:latest
+
+      - docker push $ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ORDERS_REPO:latest
 
   post_build:
     commands:
-      - echo "====================================="
-      - echo "Build Completed Successfully"
-      - echo "====================================="
+      - echo Build completed successfully
 
-artifacts:
-  files:
-    - appspec.yml
-    - taskdef.json
-    
+artifacts: 
+files: 
+- appspec.yml 
+- taskdef.json
