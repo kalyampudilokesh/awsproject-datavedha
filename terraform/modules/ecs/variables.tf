@@ -10,9 +10,11 @@ variable "execution_role_arn" {}
 
 variable "task_role_arn" {}
 
-variable "products_target_group_arn" {}
-
 variable "orders_target_group_arn" {}
+
+variable "products_blue_target_group_arn" {
+  type = string
+}
 
 variable "db_endpoint" {}
 

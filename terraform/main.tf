@@ -68,7 +68,7 @@ module "ecs" {
 
   task_role_arn = module.iam.task_role_arn
 
-  products_target_group_arn = module.alb.products_target_group_arn
+  products_blue_target_group_arn = module.alb.products_blue_target_group_arn
 
   orders_target_group_arn = module.alb.orders_target_group_arn
 

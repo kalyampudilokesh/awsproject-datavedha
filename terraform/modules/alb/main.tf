@@ -16,21 +16,7 @@ resource "aws_lb" "main" {
     Name = "${var.project_name}-alb"
   }
 }
-resource "aws_lb_target_group" "products" {
 
-  name = "${var.project_name}-products"
-
-  port     = 3000
-  protocol = "HTTP"
-
-  target_type = "ip"
-
-  vpc_id = var.vpc_id
-
-  health_check {
-    path = "/health"
-  }
-}
 resource "aws_lb_target_group" "orders" {
 
   name = "${var.project_name}-orders"
@@ -41,6 +27,30 @@ resource "aws_lb_target_group" "orders" {
   target_type = "ip"
 
   vpc_id = var.vpc_id
+
+  health_check {
+    path = "/health"
+  }
+}
+
+resource "aws_lb_target_group" "products_blue" {
+  name        = "${var.project_name}-products-blue"
+  port        = 3000
+  protocol    = "HTTP"
+  target_type = "ip"
+  vpc_id      = var.vpc_id
+
+  health_check {
+    path = "/health"
+  }
+}
+
+resource "aws_lb_target_group" "products_green" {
+  name        = "${var.project_name}-products-green"
+  port        = 3000
+  protocol    = "HTTP"
+  target_type = "ip"
+  vpc_id      = var.vpc_id
 
   health_check {
     path = "/health"
@@ -78,7 +88,7 @@ resource "aws_lb_listener_rule" "products" {
 
     type = "forward"
 
-    target_group_arn = aws_lb_target_group.products.arn
+    target_group_arn = aws_lb_target_group.products_blue.arn
   }
 
   condition {
@@ -112,5 +122,17 @@ resource "aws_lb_listener_rule" "orders" {
         "/api/orders*"
       ]
     }
+  }
+}
+resource "aws_lb_listener" "test" {
+
+  load_balancer_arn = aws_lb.main.arn
+
+  port     = 8080
+  protocol = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.products_green.arn
   }
 }
