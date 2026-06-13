@@ -15,6 +15,11 @@ if (process.env.ENABLE_XRAY === 'true') {
 
 require('dotenv').config();
 const app = require('./app');
+console.log({
+  DB_HOST: process.env.DB_HOST,
+  DB_NAME: process.env.DB_NAME,
+  DB_SSL: process.env.DB_SSL
+});
 const { initDb } = require('./db/pool');
 const logger = require('./middleware/logger');
 

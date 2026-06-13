@@ -42,6 +42,10 @@ resource "aws_ecs_task_definition" "products" {
         value = "3000"
       },
       {
+        name  = "DB_NAME"
+        value = "ecommerce"
+      },
+      {
         name  = "LOG_LEVEL"
         value = "info"
       },
@@ -63,7 +67,7 @@ resource "aws_ecs_task_definition" "products" {
       },
       {
         name  = "DB_SSL"
-        value = "false"
+        value = "true"
       },
       {
         name  = "ENABLE_XRAY"
@@ -117,6 +121,10 @@ resource "aws_ecs_task_definition" "orders" {
         value = "8000"
       },
       {
+        name  = "DB_NAME"
+        value = "ecommerce"
+      },
+      {
         name  = "LOG_LEVEL"
         value = "info"
       },
@@ -138,7 +146,7 @@ resource "aws_ecs_task_definition" "orders" {
       },
       {
         name  = "DB_SSL"
-        value = "false"
+        value = "true"
       },
       {
         name  = "PRODUCTS_SERVICE_URL"
