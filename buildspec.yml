@@ -64,8 +64,11 @@ phases:
   post_build:
     commands:
       - echo Build completed successfully
+      - printf '{"ImageURI":"%s"}' \
+        $ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$PRODUCTS_REPO:latest > imageDetail.json
 
 artifacts:
   files:
     - appspec.yml
     - taskdef.json
+    - imageDetail.json
