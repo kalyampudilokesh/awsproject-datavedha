@@ -42,32 +42,8 @@ resource "aws_ecs_task_definition" "products" {
         value = "3000"
       },
       {
-        name  = "DB_NAME"
-        value = "ecommerce"
-      },
-      {
         name  = "LOG_LEVEL"
         value = "info"
-      },
-      {
-        name  = "DB_HOST"
-        value = var.db_host
-      },
-      {
-        name  = "DB_PORT"
-        value = "5432"
-      },
-      {
-        name  = "DB_USER"
-        value = var.db_username
-      },
-      {
-        name  = "DB_PASSWORD"
-        value = var.db_password
-      },
-      {
-        name  = "DB_SSL"
-        value = "true"
       },
       {
         name  = "ENABLE_XRAY"
@@ -76,6 +52,32 @@ resource "aws_ecs_task_definition" "products" {
       {
         name  = "ALLOWED_ORIGINS"
         value = var.allowed_origins
+      }
+    ]
+    secrets = [
+      {
+        name      = "DB_HOST"
+        valueFrom = "arn:aws:secretsmanager:ap-southeast-2:206818123390:secret:ecomm/ecommerce-sksLWR:DB_HOST::"
+      },
+      {
+        name      = "DB_PORT"
+        valueFrom = "arn:aws:secretsmanager:ap-southeast-2:206818123390:secret:ecomm/ecommerce-sksLWR:DB_PORT::"
+      },
+      {
+        name      = "DB_NAME"
+        valueFrom = "arn:aws:secretsmanager:ap-southeast-2:206818123390:secret:ecomm/ecommerce-sksLWR:DB_NAME::"
+      },
+      {
+        name      = "DB_USER"
+        valueFrom = "arn:aws:secretsmanager:ap-southeast-2:206818123390:secret:ecomm/ecommerce-sksLWR:DB_USER::"
+      },
+      {
+        name      = "DB_PASSWORD"
+        valueFrom = "arn:aws:secretsmanager:ap-southeast-2:206818123390:secret:ecomm/ecommerce-sksLWR:DB_PASSWORD::"
+      },
+      {
+        name      = "DB_SSL"
+        valueFrom = "arn:aws:secretsmanager:ap-southeast-2:206818123390:secret:ecomm/ecommerce-sksLWR:DB_SSL::"
       }
     ]
     }
@@ -121,44 +123,42 @@ resource "aws_ecs_task_definition" "orders" {
         value = "8000"
       },
       {
-        name  = "DB_NAME"
-        value = "ecommerce"
-      },
-      {
         name  = "LOG_LEVEL"
         value = "info"
-      },
-      {
-        name  = "DB_HOST"
-        value = var.db_host
-      },
-      {
-        name  = "DB_PORT"
-        value = "5432"
-      },
-      {
-        name  = "DB_USER"
-        value = var.db_username
-      },
-      {
-        name  = "DB_PASSWORD"
-        value = var.db_password
-      },
-      {
-        name  = "DB_SSL"
-        value = "true"
       },
       {
         name  = "PRODUCTS_SERVICE_URL"
         value = var.products_service_url
       },
       {
-        name  = "ENABLE_XRAY"
-        value = "true"
-      },
-      {
         name  = "ALLOWED_ORIGINS"
         value = var.allowed_origins
+      }
+    ]
+      secrets = [
+      {
+        name      = "DB_HOST"
+        valueFrom = "arn:aws:secretsmanager:ap-southeast-2:206818123390:secret:ecomm/ecommerce-sksLWR:DB_HOST::"
+      },
+      {
+        name      = "DB_PORT"
+        valueFrom = "arn:aws:secretsmanager:ap-southeast-2:206818123390:secret:ecomm/ecommerce-sksLWR:DB_PORT::"
+      },
+      {
+        name      = "DB_NAME"
+        valueFrom = "arn:aws:secretsmanager:ap-southeast-2:206818123390:secret:ecomm/ecommerce-sksLWR:DB_NAME::"
+      },
+      {
+        name      = "DB_USER"
+        valueFrom = "arn:aws:secretsmanager:ap-southeast-2:206818123390:secret:ecomm/ecommerce-sksLWR:DB_USER::"
+      },
+      {
+        name      = "DB_PASSWORD"
+        valueFrom = "arn:aws:secretsmanager:ap-southeast-2:206818123390:secret:ecomm/ecommerce-sksLWR:DB_PASSWORD::"
+      },
+      {
+        name      = "DB_SSL"
+        valueFrom = "arn:aws:secretsmanager:ap-southeast-2:206818123390:secret:ecomm/ecommerce-sksLWR:DB_SSL::"
       }
     ]
     }

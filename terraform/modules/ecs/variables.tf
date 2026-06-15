@@ -16,15 +16,12 @@ variable "products_blue_target_group_arn" {
   type = string
 }
 
-variable "db_endpoint" {}
-
-variable "db_host" {}
-
-variable "db_username" {}
-
-variable "db_password" {
-  sensitive = true
+variable "ecommerce_secret_arn" {
+  description = "Secrets Manager ARN for ecommerce database"
+  type        = string
 }
+
+variable "db_endpoint" {}
 
 variable "products_service_url" {
   default = "http://localhost:3000"

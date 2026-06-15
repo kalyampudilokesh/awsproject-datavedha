@@ -73,12 +73,8 @@ module "ecs" {
   orders_target_group_arn = module.alb.orders_target_group_arn
 
   db_endpoint = module.rds.db_endpoint
-
-  db_host = module.rds.db_endpoint
-
-  db_username = "postgres"
-
-  db_password = var.db_password
+  
+  ecommerce_secret_arn = var.ecommerce_secret_arn
 
   products_service_url = "http://localhost:3000"
 

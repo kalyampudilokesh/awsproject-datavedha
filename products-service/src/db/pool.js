@@ -29,6 +29,10 @@ function getPool() {
 async function initDb() {
   const client = await getPool().connect();
   try {
+       // Enable pgcrypto extension
+    await client.query(`
+      CREATE EXTENSION IF NOT EXISTS pgcrypto;
+    `);
     // Create products table if it doesn't exist
     await client.query(`
       CREATE TABLE IF NOT EXISTS products (
