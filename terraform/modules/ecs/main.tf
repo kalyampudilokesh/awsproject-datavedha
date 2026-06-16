@@ -32,6 +32,14 @@ resource "aws_ecs_task_definition" "products" {
           hostPort      = 3000
         }
       ]
+      logConfiguration = {
+      logDriver = "awslogs"
+      options = {
+        awslogs-group         = "/ecs/products-service"
+        awslogs-region        = "ap-southeast-2"
+        awslogs-stream-prefix = "ecs"
+      }
+    }
         environment = [
       {
         name  = "ENV"
@@ -113,6 +121,14 @@ resource "aws_ecs_task_definition" "orders" {
           hostPort      = 8000
         }
       ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = "/ecs/orders-service"
+          awslogs-region        = "ap-southeast-2"
+          awslogs-stream-prefix = "ecs"
+        }
+      }
       environment = [
       {
         name  = "ENV"
@@ -248,4 +264,13 @@ resource "aws_ecs_service" "orders" {
 
     container_port = 8000
   }
+}
+resource "aws_cloudwatch_log_group" "products" {
+  name              = "/ecs/products-service"
+  retention_in_days = 7
+}
+
+resource "aws_cloudwatch_log_group" "orders" {
+  name              = "/ecs/orders-service"
+  retention_in_days = 7
 }
