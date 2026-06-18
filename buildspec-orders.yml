@@ -31,10 +31,10 @@ phases:
 
   post_build:
     commands:
-      - printf '[{"name":"orders","imageUri":"%s"}]' "$ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ORDERS_REPO:latest" > imageDetail.json
+      - printf '[{"name":"orders","ImageURI":"%s"}]' "$ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ORDERS_REPO:latest" > imageDetail.json
 
 artifacts:
   files:
     - appspec-orders.yml
     - taskdef-orders.json
-    - imageDetail.json
+    - ordimageDetail.json
