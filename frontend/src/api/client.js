@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 // In production, VITE_API_BASE_URL is set to the CloudFront/ALB URL via build env
-const BASE = 'http://e-comm-alb-1205083686.ap-southeast-2.elb.amazonaws.com'
+const BASE = 'http://ecomm-alb-528648831.ap-southeast-2.elb.amazonaws.com'
 
 const api = axios.create({ baseURL: BASE, timeout: 10000 })
 

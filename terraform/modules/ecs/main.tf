@@ -198,7 +198,8 @@ resource "aws_ecs_service" "products" {
   }
   lifecycle {
   ignore_changes = [
-    task_definition
+    task_definition,
+    load_balancer
   ]
   }
 
@@ -241,7 +242,8 @@ resource "aws_ecs_service" "orders" {
 
   lifecycle {
   ignore_changes = [
-    task_definition
+    task_definition,
+    load_balancer
   ]
   }
 

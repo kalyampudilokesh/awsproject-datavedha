@@ -1,9 +1,16 @@
 resource "aws_s3_bucket" "frontend" {
-
-  bucket = "ecomm-loki-frontend-bucket"
+  bucket = "ecomm-loki-frontend-bucket-1"
 
   tags = {
     Name = "${var.project_name}-frontend-bucket"
+  }
+}
+
+resource "aws_s3_bucket_versioning" "frontend" {
+  bucket = aws_s3_bucket.frontend.id
+
+  versioning_configuration {
+    status = "Enabled"
   }
 }
 resource "aws_s3_bucket_website_configuration" "frontend" {

@@ -15,6 +15,9 @@ variable "orders_target_group_arn" {}
 variable "products_blue_target_group_arn" {
   type = string
 }
+variable "orders_blue_target_group_arn"{
+  type = string
+}
 
 variable "ecommerce_secret_arn" {
   description = "Secrets Manager ARN for ecommerce database"

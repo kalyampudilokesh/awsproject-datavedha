@@ -72,8 +72,10 @@ module "ecs" {
 
   orders_target_group_arn = module.alb.orders_target_group_arn
 
+  orders_blue_target_group_arn = module.alb.orders_blue_target_group_arn
+
   db_endpoint = module.rds.db_endpoint
-  
+
   ecommerce_secret_arn = var.ecommerce_secret_arn
 
   products_service_url = "http://localhost:3000"

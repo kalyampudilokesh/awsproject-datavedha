@@ -1,0 +1,40 @@
+version: 0.2
+
+env:
+  variables:
+    AWS_DEFAULT_REGION: ap-southeast-2
+    ACCOUNT_ID: 206818123390
+    ORDERS_REPO: ecomm-orders-service
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.12
+
+  pre_build:
+    commands:
+      - echo Logging in to ECR
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+
+      - cd orders-service
+      - pip install -r requirements.txt
+      - pytest tests/ -v
+      - cd ..
+
+  build:
+    commands:
+      - docker build -t $ORDERS_REPO:latest ./orders-service
+
+      - docker tag $ORDERS_REPO:latest $ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ORDERS_REPO:latest
+
+      - docker push $ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ORDERS_REPO:latest
+
+  post_build:
+    commands:
+      - printf '[{"name":"orders","imageUri":"%s"}]' "$ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ORDERS_REPO:latest" > imageDetail.json
+
+artifacts:
+  files:
+    - appspec-orders.yml
+    - taskdef-orders.json
+    - imageDetail.json
