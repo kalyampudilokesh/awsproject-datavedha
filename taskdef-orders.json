@@ -2,7 +2,7 @@
   "containerDefinitions": [
     {
       "name": "orders",
-      "image": "<IMAGE1_NAME>",
+      "image": "206818123390.dkr.ecr.ap-southeast-2.amazonaws.com/ecomm-orders-service:latest",
       "cpu": 0,
       "portMappings": [
         {
