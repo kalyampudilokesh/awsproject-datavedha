@@ -53,12 +53,14 @@ app.add_middleware(
 # Structured request logging middleware
 app.add_middleware(RequestLoggingMiddleware)
 
+from fastapi import HTTPException
 
 @app.get("/health", tags=["health"])
 async def health_check():
-    """ALB target group health check endpoint."""
-    return {"status": "healthy", "service": "orders-service"}
-
+    raise HTTPException(
+        status_code=500,
+        detail="Rollback test"
+    )
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):

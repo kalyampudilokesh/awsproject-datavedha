@@ -134,7 +134,7 @@ resource "aws_lb_listener_rule" "orders" {
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.orders.arn
+    target_group_arn = aws_lb_target_group.orders_blue.arn
   }
 
   condition {

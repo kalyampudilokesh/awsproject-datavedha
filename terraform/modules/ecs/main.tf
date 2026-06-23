@@ -260,7 +260,7 @@ resource "aws_ecs_service" "orders" {
 
   load_balancer {
 
-    target_group_arn = var.orders_target_group_arn
+    target_group_arn = var.orders_blue_target_group_arn
 
     container_name = "orders"
 
