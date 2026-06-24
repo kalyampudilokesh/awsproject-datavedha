@@ -144,7 +144,7 @@ resource "aws_ecs_task_definition" "orders" {
       },
       {
         name  = "PRODUCTS_SERVICE_URL"
-        value = var.products_service_url
+        value = "http://ecomm-alb-528648831.ap-southeast-2.elb.amazonaws.com"
       },
       {
         name  = "ALLOWED_ORIGINS"
